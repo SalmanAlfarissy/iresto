@@ -11,7 +11,7 @@
 	<meta name="format-detection" content="telephone=no">
 
 	<!-- PAGE TITLE HERE -->
-	<title>Dompet : Payment Admin Template</title>
+	<title>iResto : Restoran Indonesia</title>
 
 	<!-- FAVICONS ICON -->
 	<link rel="shortcut icon" type="image/png" href="{{ asset('admin/images/icook.png') }}">
@@ -29,17 +29,20 @@
                             <div class="col-xl-12">
                                 <div class="auth-form">
 									<div class="text-center mb-3">
-										<a href="index.html"><img src="{{ asset('admin/images/icook.png') }}" alt="" width="100px"></a>
+										<a href="#"><img src="{{ asset('admin/images/icook.png') }}" alt="" width="100px"></a>
 									</div>
                                     <h4 class="text-center mb-4">Sign in your account</h4>
-                                    <form action="index.html">
+                                    <form id="formLogin" method="POST">
+                                        @csrf
                                         <div class="mb-3">
                                             <label class="mb-1"><strong>Email</strong></label>
                                             <input type="email" class="form-control" placeholder="hello@example.com" name="email">
+                                            <div class="text-danger email-error"></div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="mb-1"><strong>Password</strong></label>
                                             <input type="password" class="form-control" name="password">
+                                            <div class="text-danger password-error"></div>
                                         </div>
                                         <div class="row d-flex justify-content-between mt-4 mb-2">
                                             <div class="mb-3">
@@ -75,7 +78,35 @@
     <!-- Required vendors -->
     <script src="{{ asset('admin/vendor/global/global.min.js') }}"></script>
     <script src="{{ asset('admin/js/custom.min.js') }}"></script>
-    <script src="{{ asset('admin/js/dlabnav-init.js') }}"></script>
-	<script src="{{ asset('admin/js/styleSwitcher.js') }}"></script>
+    {{-- <script src="{{ asset('admin/js/dlabnav-init.js') }}"></script>
+	<script src="{{ asset('admin/js/styleSwitcher.js') }}"></script> --}}
+    <script>
+        $(document).on('submit', '#formLogin', function (e) {
+            e.preventDefault();
+            var form = $(this);
+            $.ajax({
+                type: "POST",
+                url: "{{ route('login-authUser') }}",
+                data: form.serialize(),
+                success: function (result) {
+                    if (result.status) {
+                        window.location.href = "{{ route('login') }}";
+                    }else{
+                        swal("Login Gagal", result.message, "error");
+                        $('.email-error').text();
+                        $('.password-error').text();
+                    }
+                },
+                error: function (xhr, error) {
+                    var message = xhr.responseJSON.errors;
+                    var email = message.email ?? '';
+                    var password = message.password ?? '';
+                    $('.email-error').text(email);
+                    $('.password-error').text(password);
+
+                }
+            });
+        });
+    </script>
 </body>
 </html>

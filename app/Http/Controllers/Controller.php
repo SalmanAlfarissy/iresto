@@ -10,4 +10,14 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public function result(String $message, $data=null, $status = false)
+    {
+        return response()->json([
+            'message'=>$message,
+            'data'=>$data,
+            'newtoken'=>csrf_token(),
+            'status'=>$status,
+        ]);
+    }
 }

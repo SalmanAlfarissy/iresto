@@ -87,5 +87,6 @@
 @endsection
 
 @push('custom-script')
-
+<!-- Dashboard 1 -->
+<script src="{{ asset('admin/js/dashboard/my-wallet.js') }}"></script>
 @endpush

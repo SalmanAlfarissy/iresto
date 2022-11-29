@@ -12,9 +12,6 @@
 
 <script src="{{ asset('admin/vendor/jquery-nice-select/js/jquery.nice-select.min.js') }}"></script>
 
-<!-- Dashboard 1 -->
-<script src="{{ asset('admin/js/dashboard/my-wallet.js') }}"></script>
-
 <script src="{{ asset('admin/js/custom.min.js') }}"></script>
 <script src="{{ asset('admin/js/dlabnav-init.js') }}"></script>
 {{-- <script src="admin/js/demo.js"></script>

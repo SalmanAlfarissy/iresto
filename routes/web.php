@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MyWalletController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,21 +17,36 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('login', function () {
-    return view('login');
-});
-Route::get('transaction', function () {
-    return view('transaction.index');
-});
-Route::get('ledgerbalence', function () {
-    return view('ledgerbalence.index');
+//login
+Route::get('login', [LoginController::class,'index'])->name('login');
+Route::post('authuser', [LoginController::class,'authUser'])->name('login-authUser');
+
+//logout
+Route::get('logout', [LoginController::class,'logout'])->name('logout');
+
+//Admin
+Route::group(['middleware'=>['checkLevel:admin,user,customer']], function () {
+    Route::group(['middleware'=>['checkLevel:admin,user']], function(){
+        Route::get('dashboard', [DashboardController::class,'index'])->name('dashboard');
+    });
+
+    Route::group(['middleware'=>['checkLevel:admin'], 'prefix'=>'user'] ,function () {
+        Route::get('/', [UserController::class,'index'])->name('user');
+        Route::get('getdata', [UserController::class,'getData'])->name('user-getData');
+        Route::post('create', [UserController::class,'create'])->name('user-create');
+        Route::post('update/{id}', [UserController::class,'update'])->name('user-update');
+        Route::post('delete/{id}', [UserController::class,'delete'])->name('user-delete');
+    });
+
+    Route::middleware(['checkLevel:customer'])->group(function () {
+        Route::prefix('mywallet')->group(function () {
+            Route::get('/', [MyWalletController::class,'index'])->name('mywallet');
+
+        });
+    });
 });
 
-Route::get('user', function () {
-    return view('user.index');
-});
+//customer
 
-Route::get('/', [DashboardController::class,'index'])->name('dashboard');
-Route::get('/mywallet', [MyWalletController::class,'index'])->name('topup');
-Route::get('/payment', [MyWalletController::class,'payment'])->name('topup-payment');
-Route::post('/datatransaksi', [MyWalletController::class,'dataTransaksi'])->name('topup-datatransaksi');
+
+
