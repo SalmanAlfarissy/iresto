@@ -13,15 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('debet', function (Blueprint $table) {
             $table->id();
-            $table->string('firtsname');
-            $table->string('lastname');
-            $table->string('email')->unique();
-            $table->string('phone');
-            $table->text('address')->nullable();
-            $table->string('password');
-            $table->enum('status', ['admin', 'user', 'customer'])->nullable()->default('admin');
+            $table->bigInteger('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->double('amount', 15, 2);
             $table->timestamps();
         });
     }
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('debet');
     }
 };

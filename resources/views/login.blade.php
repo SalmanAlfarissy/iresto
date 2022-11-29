@@ -1,110 +1,81 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+
+<head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="keywords" content="admin, dashboard">
+	<meta name="author" content="DexignZone">
+	<meta name="robots" content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="format-detection" content="telephone=no">
 
-    <link rel="shortcut icon" type="image/png" href="{{ asset('images/logosumbar.png') }}">
+	<!-- PAGE TITLE HERE -->
+	<title>Dompet : Payment Admin Template</title>
 
-    <link rel="stylesheet" href="{{ asset('login/fonts/icomoon/style.css') }}">
+	<!-- FAVICONS ICON -->
+	<link rel="shortcut icon" type="image/png" href="{{ asset('admin/images/icook.png') }}">
+    <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('login/css/owl.carousel.min.css') }}">
+</head>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('login/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css">
-    <link href="{{ asset('admin/vendor/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet">
-
-    <!-- Style -->
-    <link rel="stylesheet" href="{{ asset('login/css/style.css') }}">
-
-    <title>Login</title>
-  </head>
-  <body>
-  <div class="content">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <img src="{{ asset('login/images/undraw_remotely_2j6y.svg') }}" alt="Image" class="img-fluid">
-        </div>
-        <div class="col-md-6 contents">
-          <div class="row justify-content-center">
-            <div class="col-md-8">
-              <div class="mb-4">
-              <center><h3>Selamat Datang</h3></center>
-            </div>
-                <form  method="post" id="auth-user">
-                    @csrf
-                    <div class="form-group first">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" name="username">
-                    </div>
-                    <span class="error-text text-danger username-error"></span>
-                    <div class="form-group last">
-                        <label for="password">Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" name="password" id="password">
-                            <span toggle="#password-field" class="input-group-text border-0 bg-transparent bi bi-eye  toggle-password"></span>
+<body class="vh-100">
+    <div class="authincation h-100">
+        <div class="container h-100">
+            <div class="row justify-content-center h-100 align-items-center">
+                <div class="col-md-6">
+                    <div class="authincation-content">
+                        <div class="row no-gutters">
+                            <div class="col-xl-12">
+                                <div class="auth-form">
+									<div class="text-center mb-3">
+										<a href="index.html"><img src="{{ asset('admin/images/icook.png') }}" alt="" width="100px"></a>
+									</div>
+                                    <h4 class="text-center mb-4">Sign in your account</h4>
+                                    <form action="index.html">
+                                        <div class="mb-3">
+                                            <label class="mb-1"><strong>Email</strong></label>
+                                            <input type="email" class="form-control" placeholder="hello@example.com" name="email">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="mb-1"><strong>Password</strong></label>
+                                            <input type="password" class="form-control" name="password">
+                                        </div>
+                                        <div class="row d-flex justify-content-between mt-4 mb-2">
+                                            <div class="mb-3">
+                                               <div class="form-check custom-checkbox ms-1">
+													<input type="checkbox" class="form-check-input" id="basic_checkbox_1">
+													<label class="form-check-label" for="basic_checkbox_1">Remember my preference</label>
+												</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <a href="page-forgot-password.html">Forgot Password?</a>
+                                            </div>
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                                        </div>
+                                    </form>
+                                    <div class="new-account mt-3">
+                                        <p>Don't have an account? <a class="text-primary" href="#">Sign up</a></p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <span class="error-text text-danger password-error"></span>
-                    <div style="padding: 10px"></div>
-                    <button type="submit" class="btn btn-block btn-primary">Login</button>
-                </form>
+                </div>
             </div>
-          </div>
-
         </div>
-
-      </div>
     </div>
-  </div>
 
-    <script src="{{ asset('login/js/jquery-3.3.1.min.js') }}"></script>
-    <script src="{{ asset('login/js/popper.min.js') }}"></script>
-    <script src="{{ asset('login/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('login/js/main.js') }}"></script>
-    <script src="{{ asset('admin/vendor/sweetalert2/dist/sweetalert2.min.js') }}"></script>
 
-    <script>
-        $(document).on('click', '.toggle-password', function() {
-            $(this).toggleClass("bi-eye bi-eye-slash");
-            var input = $("#password");
-            input.attr('type') === 'password' ? input.attr('type','text') : input.attr('type','password')
-        });
-
-        $(document).on('submit', '#auth-user', function(e)
-        {
-            e.preventDefault()
-            var form = $(this)
-            $.ajax({
-                type: "POST",
-                url: "{{ route('auth-user') }}",
-                data: form.serialize(),
-                success: function (result) {
-
-                    $('.username-error').hide();
-                    $('.password-error').hide();
-
-                    if (result.status) {
-                        window.location.href = "{{ route('dashboard') }}";
-                    }else {
-                        sweetAlert("Wrong", result.message, "error");
-                    }
-
-                },
-                error: function (xhr, error){
-                    var message = xhr.responseJSON.errors;
-                    var erruser = message.username ?? '';
-                    var errpass = message.password ?? '';
-                    $('.username-error').text(erruser);
-                    $('.password-error').text(errpass);
-                }
-            });
-        });
-
-    </script>
-  </body>
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    <script src="{{ asset('admin/vendor/global/global.min.js') }}"></script>
+    <script src="{{ asset('admin/js/custom.min.js') }}"></script>
+    <script src="{{ asset('admin/js/dlabnav-init.js') }}"></script>
+	<script src="{{ asset('admin/js/styleSwitcher.js') }}"></script>
+</body>
 </html>

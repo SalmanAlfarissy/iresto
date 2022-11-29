@@ -5,7 +5,7 @@
                 <a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
                     <img src="{{ asset('admin/images/profile/pic1.png') }}" width="20" alt="">
                     <div class="header-info ms-3">
-                        <span class="font-w600 ">Hi, {{ Auth::user()->nama }}<b></b></span>
+                        <span class="font-w600 ">Hi, <b></b></span>
                         <small class="text-end font-w400"></small>
                     </div>
                 </a>
@@ -25,33 +25,34 @@
                 </div>
             </li>
 
-            <li class="{{ request()->is('admin/dashboard') ? 'mm-active' : '' }}"><a href="{{ route('dashboard') }}" class="ai-icon" aria-expanded="false">
+            {{-- {{ request()->is('admin/dashboard') ? 'mm-active' : '' }} --}}
+            <li class=""><a href="" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-025-dashboard"></i>
                     <span class="nav-text">Dashboard</span>
                 </a>
             </li>
 
-            <li class="{{ request()->is('admin/dusun') ? 'mm-active' : '' }}"><a href="{{ route('dusun') }}" class="ai-icon" aria-expanded="false">
-                    <i class="flaticon-381-location-1"></i>
-                    <span class="nav-text">Dusun</span>
+            <li class=""><a href="" class="ai-icon" aria-expanded="false">
+                    <i class="flaticon-381-id-card"></i>
+                    <span class="nav-text">My Wallet</span>
                 </a>
             </li>
 
-            <li class="{{ request()->is('admin/user') ? 'mm-active' : '' }}"><a href="#" class="ai-icon" aria-expanded="false">
+            <li class=""><a href="#" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-user"></i>
                     <span class="nav-text">User</span>
                 </a>
             </li>
 
-            <li class="{{ request()->is('admin/penduduk') ? 'mm-active' : '' }}"><a href="#" class="ai-icon" aria-expanded="false">
-                    <i class="flaticon-381-user-8"></i>
-                    <span class="nav-text">Penduduk</span>
+            <li class=""><a href="#" class="ai-icon" aria-expanded="false">
+                    <i class="flaticon-381-list-1"></i>
+                    <span class="nav-text">Transaction</span>
                 </a>
             </li>
 
-            <li class="{{ request()->is('admin/klasifikasi') ? 'mm-active' : '' }}"><a href="#" class="ai-icon" aria-expanded="false">
-                <i class="flaticon-381-list"></i>
-                <span class="nav-text">Klasifikasi</span>
+            <li class=""><a href="#" class="ai-icon" aria-expanded="false">
+                <i class="flaticon-381-notebook-2"></i>
+                <span class="nav-text">Ledger Balance</span>
             </a>
         </li>
 

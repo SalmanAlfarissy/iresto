@@ -15,7 +15,7 @@
 	<title>@yield('title')</title>
 
 	<!-- FAVICONS ICON -->
-	<link rel="shortcut icon" type="image/png" href="{{ asset('images/logosumbar.png') }}">
+	<link rel="shortcut icon" type="image/png" href="{{ asset('admin/images/icook.png') }}">
 
     <!-- Datatable -->
     <link href="{{ asset('admin/vendor/datatables/css/jquery.dataTables.min.css') }}" rel="stylesheet">
