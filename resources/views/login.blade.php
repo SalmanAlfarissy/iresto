@@ -13,6 +13,7 @@
 	<!-- PAGE TITLE HERE -->
 	<title>iResto : Restoran Indonesia</title>
 
+    <link href="{{ asset('admin/vendor/sweetalert2/dist/sweetalert2.min.css') }}" rel="stylesheet">
 	<!-- FAVICONS ICON -->
 	<link rel="shortcut icon" type="image/png" href="{{ asset('admin/images/icook.png') }}">
     <link href="{{ asset('admin/css/style.css') }}" rel="stylesheet">
@@ -78,6 +79,7 @@
     <!-- Required vendors -->
     <script src="{{ asset('admin/vendor/global/global.min.js') }}"></script>
     <script src="{{ asset('admin/js/custom.min.js') }}"></script>
+    <script src="{{ asset('admin/vendor/sweetalert2/dist/sweetalert2.min.js') }}"></script>
     {{-- <script src="{{ asset('admin/js/dlabnav-init.js') }}"></script>
 	<script src="{{ asset('admin/js/styleSwitcher.js') }}"></script> --}}
     <script>

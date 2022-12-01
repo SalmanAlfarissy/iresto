@@ -2,76 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
-use Midtrans\Snap;
-use Midtrans\Config;
+use App\Models\Debet;
+use App\Models\Kredit;
 use Illuminate\Http\Request;
+use App\Services\ContractPayment;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class MyWalletController extends Controller
 {
+    protected $payment;
+
+    public function __construct(ContractPayment $payment)
+    {
+        $this->payment = $payment;
+    }
+
     public function index()
     {
-        return view('mywallet.index');
+        $user = Auth::user();
+        $kredit = Kredit::with('dataUser')->where('user_id',$user->id)->sum('amount');
+        $debet = Debet::with('dataUser')->where('user_id',$user->id)->sum('amount');
+        $saldo = $kredit - $debet;
+        $kredit = $this->rupiah($kredit);
+        $debet = $this->rupiah($debet);
+        $saldo = $this->rupiah($saldo);
+        return view('mywallet.index', [
+            'user'=>$user,
+            'saldo'=>$saldo,
+            'kredit'=>$kredit,
+            'debet'=>$debet
+        ]);
     }
     public function payment(Request $request)
     {
-        // Set your Merchant Server Key
-        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-        Config::$isProduction = false;
-        // Set sanitization on (default)
-        Config::$isSanitized = true;
-        // Set 3DS transaction for credit card to true
-        Config::$is3ds = true;
-
-        $params = array(
-            'transaction_details' => array(
-                'order_id' => rand(),
-                'gross_amount' => 10000,
-            ),
-            'customer_details' => array(
-                'first_name' => $request->firstname,
-                'last_name' => $request->lastname,
-                'email' => $request->email,
-                'phone' => $request->phonenumber,
-            ),
-            'item_detail'=> array(
-                [
-                    "id" => "a01",
-                    "price" => 7000,
-                    "quantity" => 1,
-                    "name" => "Apple"
-                ],
-                [
-                    "id" => "b02",
-                    "price" => 3000,
-                    "quantity" => 2,
-                    "name" => "Orange"
-                ]
-            ),
-
-        );
-        // return $params;
-
-        $snapToken = Snap::getSnapToken($params);
-        return view('welcome',['snapToken'=>$snapToken]);
-    }
-
-    public function dataTransaksi(Request $request)
-    {
-        $trans = new Transaction();
-        $trans->transaction_id = $request->json['transaction_id'];
-        $trans->order_id = $request->json['order_id'];
-        $trans->gross_amount = $request->json['gross_amount'];
-        $trans->payment_type = $request->json['payment_type'];
-        $trans->transaction_status = $request->json['transaction_status'];
-        $trans->payment_code = $request->json['payment_code'] ?? null;
-        $trans->pdf_url = $request->json['pdf_url'] ?? null;
-        $trans->save();
-        return response()->json([
-            'dataTransaksi'=>$trans,
-            'newToken'=>csrf_token(),
-            'message'=>'add data success!!'
+        $request->validate([
+            'gross_amount'=>'required|numeric'
         ]);
+        $user = Auth::user();
+        $request['customer_details'] = $user;
+        $request['item_details'] = [
+            "id"=>"t01",
+            'name'=>'TopUp Saldo',
+            'quantity'=>1,
+            'price'=>$request->gross_amount,
+        ];
+        $data = $this->payment->payment($request);
+        return $this->result('TopUp Success!!', $data, true);
     }
 }

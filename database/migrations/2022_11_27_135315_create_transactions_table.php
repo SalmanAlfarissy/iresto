@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->string('transaction_id', 100);
             $table->string('order_id', 100);
-            $table->text('item_detail')->nullable();
+            $table->text('item_details')->nullable();
             $table->double('gross_amount', 15, 2);
             $table->string('payment_type', 100);
             $table->string('transaction_status', 100);

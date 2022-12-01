@@ -32,7 +32,7 @@ class UserController extends Controller
             'firstname'=>'required',
             'lastname'=>'required',
             'email'=>'required|email|unique:users,email',
-            'phone'=>'required',
+            'phone'=>'required|unique:users,phone',
             'address'=>'',
             'password'=>'required',
             'status'=>'required',

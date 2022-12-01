@@ -23,18 +23,19 @@
                         <div class="d-flex align-items-center">
                             <div class="me-auto">
                                 <p class="mb-1">Saldo</p>
-                                <h2 class="fs-36 text-white mb-5">Rp1000.000</h2>
+                                <h2 class="fs-36 text-white mb-5">{{ $saldo }}</h2>
                             </div>
                             <img src="{{ asset('admin/images/pattern/circle.png') }}" class="mb-4" alt="">
                         </div>
                         <div class="d-flex align-items-center">
                             <div class="me-auto">
                                 <p class="fs-14 mb-1">CARD HOLDER</p>
-                                <span>Franklin Jr.</span>
+                                <span>{{ $user->firstname." ".$user->lastname }}</span>
                             </div>
                             <div>
-                                <button type="button" class="btn btn-rounded btn-outline-success"><span class="text-white"><i class="flaticon-381-plus"></i> TopUp</span></button>
-                                <button type="button" class="btn btn-rounded btn-outline-success"><span class="text-white"><i class="flaticon-381-send-2"></i> Transfer</span></button>
+                                @csrf
+                                <button type="button" class="btn btn-rounded btn-outline-success" data-bs-toggle="modal" data-bs-target="#topUpModal"><span class="text-white"><i class="flaticon-381-plus"></i> TopUp</span></button>
+                                <button type="button" class="btn btn-rounded btn-outline-success" data-bs-toggle="modal" data-bs-target="#transferModal"><span class="text-white"><i class="flaticon-381-send-2"></i> Transfer</span></button>
                             </div>
                         </div>
                     </div>
@@ -65,7 +66,7 @@
                                     </svg>
                                 </span>
                             </div>
-                            Kredit<span>Rp100.000</span>
+                            Uang Masuk<span>{{ $kredit }}</span>
                         </li>
                         <li>
                             <div>
@@ -76,7 +77,7 @@
                                     </svg>
                                 </span>
                             </div>
-                            Debet<span>Rp100.000</span>
+                            Uang Keluar<span>{{ $debet }}</span>
                         </li>
                     </ul>
                 </div>
@@ -84,9 +85,202 @@
         </div>
     </div>
 </div>
+
+<!-- Modal TopUp-->
+<div class="modal fade" id="topUpModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form method="POST" id="transForm">
+                @csrf
+                <div class="modal-header center">
+                    <h5 class="modal-title">TopUp iRestoPay</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="basic-form">
+                        <div class="mb-3 row">
+                            <label class="col-sm-3 col-form-label">Amount</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" placeholder="Amount" name="gross_amount">
+                                <span class="error-text text-danger gross_amount-error"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Transfer-->
+<div class="modal fade" id="transferModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form method="POST" id="transferForm">
+                @csrf
+                <div class="modal-header center">
+                    <h5 class="modal-title">Transfer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="basic-form">
+                        <div class="mb-3 row">
+                            <label class="col-sm-3 col-form-label">Pilih Bank</label>
+                            <div class="col-sm-9">
+                                <select class="default-select form-control wide mb-3" name="bank">
+                                    <option value="BRI">BRI</option>
+                                    <option value="BNI">BNI</option>
+                                    <option value="Mandiri">Mandiri</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-sm-3 col-form-label">Nomor Rekening Bank</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" placeholder="NoRek" name="norek">
+                                <span class="error-text text-danger norek-error"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label class="col-sm-3 col-form-label">Amount</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" placeholder="Amount" name="gross_amount">
+                                <span class="error-text text-danger gross_amount-error"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('custom-script')
-<!-- Dashboard 1 -->
-<script src="{{ asset('admin/js/dashboard/my-wallet.js') }}"></script>
+<script type="text/javascript">
+    var token = $("input[name=_token]");
+    $(document).on('submit', '#transForm', function(e){
+        var form = $(this);
+        e.preventDefault();
+        $.ajax({
+        type: "POST",
+        url: "{{ route('mywallet-payment') }}",
+        data: {
+            _token: token.val(),
+            gross_amount: form.find('input[name=gross_amount]').val(),
+        },
+            success: function (result) {
+                token.val(result.newtoken);
+
+                // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
+                window.snap.pay(result.data, {
+                    onSuccess: function(result){
+                    /* You may add your own implementation here */
+                    swal("Success", "payment success!", "success").then(function (){
+                        dataKredit(result);
+                    });
+                    },
+                    onPending: function(result){
+                    /* You may add your own implementation here */
+                    swal("Notification", "wating your payment!", "warning").then(function (){
+                        dataTransaksi(result);
+                    });
+                    },
+                    onError: function(result){
+                    /* You may add your own implementation here */
+                    swal("Notification", "payment failed!", "warning").then(function (){
+                        dataTransaksi(result);
+                    });
+                    },
+                    onClose: function(){
+                    /* You may add your own implementation here */
+                    swal("Notification", "you closed the popup without finishing the payment", "warning").then(function (){
+                        window.location.reload();
+                    });
+
+                    }
+                })
+                $('#topUpModal').modal('hide');
+            },
+            error: function(xhr, error){
+                var message = xhr.responseJSON.errors;
+                var gross_amount = message.gross_amount ?? '';
+                $('.gross_amount-error').text(gross_amount);
+            }
+        });
+    });
+
+
+    function dataTransaksi(result){
+      var token = $('input[name=_token]')
+      $.ajax({
+          type: "POST",
+          url: "{{ route('transaction-create') }}",
+          data: {
+              _token: token.val(),
+              dataTrans: result,
+          },
+          success: function (response) {
+              token.val(response.newToken)
+              window.location.reload();
+          }
+      });
+    }
+
+    function dataKredit(result){
+      var token = $('input[name=_token]')
+      $.ajax({
+          type: "POST",
+          url: "{{ route('kredit-create') }}",
+          data: {
+              _token: token.val(),
+              dataTrans: result,
+          },
+          success: function (result) {
+            dataTransaksi(result.data);
+            token.val(result.newToken)
+          }
+      });
+    }
+
+</script>
+<script type="text/javascript">
+    $(document).on('submit', '#transferForm', function (e) {
+        e.preventDefault();
+        var form = $(this)
+        $.ajax({
+            type: "POST",
+            url: "{{ route('debet-create') }}",
+            data: {
+                _token: token.val(),
+                bank: form.find('select[name=bank]').val(),
+                norek: form.find('input[name=norek]').val(),
+                gross_amount: form.find('input[name=gross_amount]').val(),
+            },
+            success: function (result) {
+                swal("Success", "Transfer success!", "success").then(function (){
+                    console.log(result.data);
+                    dataTransaksi(result.data);
+                });
+            },
+            error: function (xhr, error) {
+                var message = xhr.responseJSON.errors;
+                var norek = message.norek ?? '';
+                var gross_amount = message.gross_amount ?? '';
+                $('.norek-error').text(norek);
+                $('.gross_amount-error').text(gross_amount);
+             }
+        });
+     });
+</script>
 @endpush
