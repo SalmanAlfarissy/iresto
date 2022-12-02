@@ -36,6 +36,18 @@
                     <span class="nav-text">User</span>
                 </a>
             </li>
+
+            <li class="{{ request()->is('menu/admin') ? 'mm-active' : '' }}"><a href="{{ route('menu-admin') }}" class="ai-icon" aria-expanded="false">
+                    <i class="flaticon-043-menu"></i>
+                    <span class="nav-text">Menu</span>
+                </a>
+            </li>
+
+            <li class="{{ request()->is('transaction/admin') ? 'mm-active' : '' }}"><a href="{{ route('transaction-admin') }}" class="ai-icon" aria-expanded="false">
+                    <i class="flaticon-381-list-1"></i>
+                    <span class="nav-text">Transaction</span>
+                </a>
+            </li>
             @endif
 
             @if ($status == 'customer')
@@ -45,19 +57,25 @@
                 </a>
             </li>
 
+            <li class="{{ request()->is('menu') ? 'mm-active' : '' }}"><a href="{{ route('menu') }}" class="ai-icon" aria-expanded="false">
+                    <i class="flaticon-043-menu"></i>
+                    <span class="nav-text">Menu</span>
+                </a>
+            </li>
+
             <li class="{{ request()->is('ledger-balance') ? 'mm-active' : '' }}"><a href="{{ route('ledger-balance') }}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-notebook-2"></i>
                     <span class="nav-text">Ledger Balance</span>
                 </a>
             </li>
 
-            @endif
-
             <li class="{{ request()->is('transaction') ? 'mm-active' : '' }}"><a href="{{ route('transaction') }}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-list-1"></i>
                     <span class="nav-text">Transaction</span>
                 </a>
             </li>
+
+            @endif
 
         </ul>
 

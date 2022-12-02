@@ -5,6 +5,7 @@ use App\Http\Controllers\DebetController;
 use App\Http\Controllers\KreditController;
 use App\Http\Controllers\LedgerBalanceController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MyWalletController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
@@ -32,23 +33,36 @@ Route::post('authuser', [LoginController::class,'authUser'])->name('login-authUs
 //logout
 Route::get('logout', [LoginController::class,'logout'])->name('logout');
 
-//Admin
+//Admin,user,costomer
 Route::group(['middleware'=>['checkLevel:admin,user,customer']], function () {
+    Route::prefix('transaction')->group(function () {
+        Route::get('/', [TransactionController::class,'index'])->middleware(['checkLevel:customer'])->name('transaction');
+        Route::get('admin', [TransactionController::class,'_index'])->name('transaction-admin');
+        Route::get('getData', [TransactionController::class,'getData'])->name('transaction-getData');
+        Route::post('create', [TransactionController::class,'create'])->name('transaction-create');
+    });
+
+    Route::prefix('menu')->group(function () {
+        Route::get('/', [MenuController::class,'index'])->middleware(['checkLevel:customer'])->name('menu');
+        Route::get('/admin', [MenuController::class,'_index'])->middleware(['checkLevel:admin,user'])->name('menu-admin');
+        Route::get('/getData', [MenuController::class,'getData'])->name('menu-getData');
+        Route::post('/create', [MenuController::class,'create'])->name('menu-create');
+        Route::post('/update/{id}', [MenuController::class,'update'])->name('menu-update');
+        Route::post('/delete/{id}', [MenuController::class,'delete'])->name('menu-delete');
+    });
+
+    //admin,user
     Route::group(['middleware'=>['checkLevel:admin,user']], function(){
         Route::get('dashboard', [DashboardController::class,'index'])->name('dashboard');
     });
 
+    //admin
     Route::group(['middleware'=>['checkLevel:admin'], 'prefix'=>'user'] ,function () {
         Route::get('/', [UserController::class,'index'])->name('user');
         Route::get('getdata', [UserController::class,'getData'])->name('user-getData');
         Route::post('create', [UserController::class,'create'])->name('user-create');
         Route::post('update/{id}', [UserController::class,'update'])->name('user-update');
         Route::post('delete/{id}', [UserController::class,'delete'])->name('user-delete');
-    });
-
-    Route::prefix('ledger-balance')->group(function () {
-        Route::get('/', [LedgerBalanceController::class,'index'])->name('ledger-balance');
-        Route::get('getData', [LedgerBalanceController::class,'getData'])->name('ledger-balance-getData');
     });
 
     //customer
@@ -58,10 +72,9 @@ Route::group(['middleware'=>['checkLevel:admin,user,customer']], function () {
             Route::post('payment', [MyWalletController::class,'payment'])->name('mywallet-payment');
         });
 
-        Route::prefix('transaction')->group(function () {
-            Route::get('/', [TransactionController::class,'index'])->name('transaction');
-            Route::get('getData', [TransactionController::class,'getData'])->name('transaction-getData');
-            Route::post('create', [TransactionController::class,'create'])->name('transaction-create');
+        Route::prefix('ledger-balance')->group(function () {
+            Route::get('/', [LedgerBalanceController::class,'index'])->name('ledger-balance');
+            Route::get('getData', [LedgerBalanceController::class,'getData'])->name('ledger-balance-getData');
         });
 
         Route::prefix('kredit')->group(function () {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\User;
 use Carbon\Traits\ToStringFormat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,10 @@ class TransactionController extends Controller
     {
         return view('transaction.index');
     }
+    public function _index()
+    {
+        return view('transaction.admin');
+    }
 
     public function create(Request $request)
     {
@@ -31,9 +36,14 @@ class TransactionController extends Controller
     public function getData(Request $request)
     {
         $data = $this->repository->getData($request->filterdate);
+
         foreach ($data as $index => $item) {
+            $user = User::where('id',$item->user_id)->first();
             $item->no = $index+1;
             $item->date = $item->created_at->format('d M y H:i:s');
+            $item->name = $user->firstname." ".$user->lastname;
+            $item->email = $user->email;
+            $item->item_details = json_decode($item->item_details);
         }
         return $this->result('Create data transaction is success!!', $data, true);
     }

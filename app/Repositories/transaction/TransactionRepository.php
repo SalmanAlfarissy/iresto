@@ -23,17 +23,21 @@ class TransactionRepository implements ContractRepository
 	public function getData($request)
     {
         $user = Auth::user();
-
         if ($user->status == "customer") {
             if ($request) {
                 $this->model = $this->model->where('user_id',$user->id)
                 ->whereDate('created_at', '>=', $request['startdate'])
                 ->whereDate('created_at', '<=', $request['enddate'])
-                // ->whereBetween('created_at', [$request['startdate'], $request['enddate']])
                 ->get();
                 return $this->model;
             }
             $this->model = $this->model->where('user_id',$user->id)->get();
+            return $this->model;
+        }
+        if ($request) {
+            $this->model = $this->model->whereDate('created_at', '>=', $request['startdate'])
+            ->whereDate('created_at', '<=', $request['enddate'])
+            ->get();
             return $this->model;
         }
         $this->model = $this->model->get();

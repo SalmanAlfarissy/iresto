@@ -38,6 +38,8 @@
                         <th>No</th>
                         <th>Payment Type</th>
                         <th>Date & Time</th>
+                        <th>Recipient</th>
+                        <th>Email</th>
                         <th>Transaction</th>
                         <th>Order ID</th>
                         <th>Amount</th>
@@ -48,7 +50,6 @@
         </div>
     </div>
 </div>
-
 
 @endsection
 
@@ -95,6 +96,8 @@
                         {"data":"no"},
                         {"data":"payment_type"},
                         {"data":"date"},
+                        {"data":"name"},
+                        {"data":"email"},
                         {"data":"item_details.name"},
                         {"data":"order_id"},
                         {"data":"gross_amount"},
@@ -102,7 +105,7 @@
                     ],
                     "columnDefs":[
                         {
-                            "targets":6,
+                            "targets":8,
                             "data":"transaction_status",
                             "render":function(data, type, row){
                                 return '<span class="badge light badge-'+(data == "settlement" ? "success" : "warning")+'">'+data+'</span>';
