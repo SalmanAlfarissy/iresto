@@ -3,6 +3,7 @@
 namespace App\Repositories\Transaction;
 
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
 use App\Repositories\ContractRepository;
 
 class TransactionRepository implements ContractRepository
@@ -19,7 +20,24 @@ class TransactionRepository implements ContractRepository
 	 * @param mixed $request
 	 * @return mixed
 	 */
-	public function getData($request) {
+	public function getData($request)
+    {
+        $user = Auth::user();
+
+        if ($user->status == "customer") {
+            if ($request) {
+                $this->model = $this->model->where('user_id',$user->id)
+                ->whereDate('created_at', '>=', $request['startdate'])
+                ->whereDate('created_at', '<=', $request['enddate'])
+                // ->whereBetween('created_at', [$request['startdate'], $request['enddate']])
+                ->get();
+                return $this->model;
+            }
+            $this->model = $this->model->where('user_id',$user->id)->get();
+            return $this->model;
+        }
+        $this->model = $this->model->get();
+        return $this->model;
 	}
 
 	/**

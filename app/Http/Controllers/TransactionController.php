@@ -28,4 +28,13 @@ class TransactionController extends Controller
         $data = $this->repository->create($request->dataTrans);
         return $this->result('Create data transaction is success!!', $data, true);
     }
+    public function getData(Request $request)
+    {
+        $data = $this->repository->getData($request->filterdate);
+        foreach ($data as $index => $item) {
+            $item->no = $index+1;
+            $item->date = $item->created_at->format('d M y H:i:s');
+        }
+        return $this->result('Create data transaction is success!!', $data, true);
+    }
 }

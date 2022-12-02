@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DebetController;
 use App\Http\Controllers\KreditController;
+use App\Http\Controllers\LedgerBalanceController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MyWalletController;
 use App\Http\Controllers\TransactionController;
@@ -44,6 +45,12 @@ Route::group(['middleware'=>['checkLevel:admin,user,customer']], function () {
         Route::post('update/{id}', [UserController::class,'update'])->name('user-update');
         Route::post('delete/{id}', [UserController::class,'delete'])->name('user-delete');
     });
+
+    Route::prefix('ledger-balance')->group(function () {
+        Route::get('/', [LedgerBalanceController::class,'index'])->name('ledger-balance');
+        Route::get('getData', [LedgerBalanceController::class,'getData'])->name('ledger-balance-getData');
+    });
+
     //customer
     Route::middleware(['checkLevel:customer'])->group(function () {
         Route::prefix('mywallet')->group(function () {
@@ -53,6 +60,7 @@ Route::group(['middleware'=>['checkLevel:admin,user,customer']], function () {
 
         Route::prefix('transaction')->group(function () {
             Route::get('/', [TransactionController::class,'index'])->name('transaction');
+            Route::get('getData', [TransactionController::class,'getData'])->name('transaction-getData');
             Route::post('create', [TransactionController::class,'create'])->name('transaction-create');
         });
 

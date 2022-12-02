@@ -38,26 +38,26 @@
             </li>
             @endif
 
-
-            <li class="{{ request()->is('mywalet') ? 'mm-active' : '' }}"><a href="/mywallet" class="ai-icon" aria-expanded="false">
+            @if ($status == 'customer')
+            <li class="{{ request()->is('mywalet') ? 'mm-active' : '' }}"><a href="{{ route('mywallet') }}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-id-card"></i>
                     <span class="nav-text">My Wallet</span>
                 </a>
             </li>
 
+            <li class="{{ request()->is('ledger-balance') ? 'mm-active' : '' }}"><a href="{{ route('ledger-balance') }}" class="ai-icon" aria-expanded="false">
+                    <i class="flaticon-381-notebook-2"></i>
+                    <span class="nav-text">Ledger Balance</span>
+                </a>
+            </li>
 
+            @endif
 
-            <li class=""><a href="#" class="ai-icon" aria-expanded="false">
+            <li class="{{ request()->is('transaction') ? 'mm-active' : '' }}"><a href="{{ route('transaction') }}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-list-1"></i>
                     <span class="nav-text">Transaction</span>
                 </a>
             </li>
-
-            <li class=""><a href="#" class="ai-icon" aria-expanded="false">
-                <i class="flaticon-381-notebook-2"></i>
-                <span class="nav-text">Ledger Balance</span>
-            </a>
-        </li>
 
         </ul>
 

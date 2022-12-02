@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('title','iResto')
-@section('page-title','myWallet')
+@section('page-title','MyWallet')
 
 @section('breadcrump')
 <div class="row page-titles">

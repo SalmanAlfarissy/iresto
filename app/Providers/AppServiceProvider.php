@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Repositories\ContractRepository;
 use App\Repositories\Debet\DebetRepository;
 use App\Repositories\Kredit\KreditRepository;
+use App\Repositories\Ledgerbalance\LedgerBalanceRepository;
 use App\Repositories\Transaction\TransactionRepository;
 use App\Repositories\User\UserRepository;
 use App\Services\ContractPayment;
@@ -29,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
                 return $app->make(KreditRepository::class);
             }elseif (preg_match("/debet/", request()->url())) {
                 return $app->make(DebetRepository::class);
+            }elseif (preg_match("/ledger-balance/", request()->url())) {
+                return $app->make(LedgerBalanceRepository::class);
             }
         });
 
