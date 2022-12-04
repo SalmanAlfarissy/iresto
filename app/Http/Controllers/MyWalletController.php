@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 class MyWalletController extends Controller
 {
     protected $payment;
+    protected $details = [];
+
 
     public function __construct(ContractPayment $payment)
     {
@@ -39,15 +41,29 @@ class MyWalletController extends Controller
         $request->validate([
             'gross_amount'=>'required|numeric'
         ]);
+
         $user = Auth::user();
-        $request['customer_details'] = $user;
-        $request['item_details'] = [
-            "id"=>"t01",
-            'name'=>'TopUp Saldo',
-            'quantity'=>1,
-            'price'=>$request->gross_amount,
-        ];
+
+        if($request->item_details){
+
+            $request['customer_details'] = $user;
+            $request['item_details'] = [
+                "id"=>"t03",
+                'name'=>'Pembayaran pesanan',
+                'quantity'=>1,
+                'price'=>$request->gross_amount,
+            ];
+
+        }else {
+            $request['customer_details'] = $user;
+            $request['item_details'] = [
+                "id"=>"t01",
+                'name'=>'TopUp Saldo',
+                'quantity'=>1,
+                'price'=>$request->gross_amount,
+            ];
+        }
         $data = $this->payment->payment($request);
-        return $this->result('TopUp Success!!', $data, true);
+        return $this->result('Payment Success!!', $data, true);
     }
 }

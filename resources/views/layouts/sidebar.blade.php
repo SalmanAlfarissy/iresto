@@ -43,6 +43,12 @@
                 </a>
             </li>
 
+            <li class="{{ request()->is('order/admin') ? 'mm-active' : '' }}"><a href="{{ route('order-admin') }}" class="ai-icon" aria-expanded="false">
+                    <i class="flaticon-381-list"></i>
+                    <span class="nav-text">Order</span>
+                </a>
+            </li>
+
             <li class="{{ request()->is('transaction/admin') ? 'mm-active' : '' }}"><a href="{{ route('transaction-admin') }}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-list-1"></i>
                     <span class="nav-text">Transaction</span>
@@ -60,6 +66,12 @@
             <li class="{{ request()->is('menu') ? 'mm-active' : '' }}"><a href="{{ route('menu') }}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-043-menu"></i>
                     <span class="nav-text">Menu</span>
+                </a>
+            </li>
+
+            <li class="{{ request()->is('order') ? 'mm-active' : '' }}"><a href="{{ route('order') }}" class="ai-icon" aria-expanded="false">
+                    <i class="flaticon-381-list"></i>
+                    <span class="nav-text">Order</span>
                 </a>
             </li>
 

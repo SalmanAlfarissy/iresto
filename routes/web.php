@@ -7,6 +7,7 @@ use App\Http\Controllers\LedgerBalanceController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MyWalletController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -51,6 +52,20 @@ Route::group(['middleware'=>['checkLevel:admin,user,customer']], function () {
         Route::post('/delete/{id}', [MenuController::class,'delete'])->name('menu-delete');
     });
 
+    Route::prefix('order')->group(function () {
+        Route::get('/', [OrderController::class,'index'])->middleware(['checkLevel:customer'])->name('order');
+        Route::get('/admin', [OrderController::class,'_index'])->middleware(['checkLevel:admin,user'])->name('order-admin');
+        Route::get('/getData', [OrderController::class,'getData'])->name('order-getData');
+        Route::post('/create', [OrderController::class,'create'])->middleware(['checkLevel:customer'])->name('order-create');
+        Route::post('/update/{id}', [OrderController::class,'update'])->name('order-update');
+        Route::post('/delete/{id}', [OrderController::class,'delete'])->name('order-delete');
+    });
+
+    Route::prefix('mywallet')->group(function () {
+        Route::get('/', [MyWalletController::class,'index'])->middleware(['checkLevel:customer'])->name('mywallet');
+        Route::post('payment', [MyWalletController::class,'payment'])->name('mywallet-payment');
+    });
+
     //admin,user
     Route::group(['middleware'=>['checkLevel:admin,user']], function(){
         Route::get('dashboard', [DashboardController::class,'index'])->name('dashboard');
@@ -67,10 +82,6 @@ Route::group(['middleware'=>['checkLevel:admin,user,customer']], function () {
 
     //customer
     Route::middleware(['checkLevel:customer'])->group(function () {
-        Route::prefix('mywallet')->group(function () {
-            Route::get('/', [MyWalletController::class,'index'])->name('mywallet');
-            Route::post('payment', [MyWalletController::class,'payment'])->name('mywallet-payment');
-        });
 
         Route::prefix('ledger-balance')->group(function () {
             Route::get('/', [LedgerBalanceController::class,'index'])->name('ledger-balance');

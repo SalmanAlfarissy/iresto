@@ -51,10 +51,22 @@ class TransactionRepository implements ContractRepository
 	 */
 	public function create($request)
     {
-        $this->model->user_id = $request['customer_details']['id'];
+        $check = $request['item_details'] ?? false;
+        if($check){
+            $item = $request['item_details'];
+        }else {
+            $item = [
+                "id"=>"t03",
+                'name'=>'Pembayaran pesanan',
+                'quantity'=>1,
+                'price'=>$request['dataTrans']['gross_amount'],
+            ];
+        }
+        $user = Auth::user();
+        $this->model->user_id = $user->id;
         $this->model->transaction_id = $request['dataTrans']['transaction_id'];
         $this->model->order_id = $request['dataTrans']['order_id'];
-        $this->model->item_details = json_encode($request['item_details']);
+        $this->model->item_details = json_encode($item);
         $this->model->gross_amount = $request['dataTrans']['gross_amount'];
         $this->model->payment_type = $request['dataTrans']['payment_type'];
         $this->model->transaction_status = $request['dataTrans']['transaction_status'];

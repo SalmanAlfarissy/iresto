@@ -12,7 +12,7 @@
 @endsection
 @section('content')
 <div class="row">
-
+@csrf
     @foreach ($data as $index => $item)
     <div class="col-xl-3 col-lg-6 col-sm-6">
         <div class="card">
@@ -23,7 +23,7 @@
                     </div>
                     <div class="new-arrival-content text-center mt-3">
                         <h6><span>{{ $item->category }}</span></h6>
-                        <h4><a href="javascript:void(0)">{{ $item->name }}</a></h4>
+                        <h4><span>{{ $item->name }}</span></h4>
                         <ul class="star-rating">
                             <li><i class="fa fa-star"></i></li>
                             <li><i class="fa fa-star"></i></li>
@@ -32,6 +32,17 @@
                             <li><i class="fa fa-star"></i></li>
                         </ul>
                         <span class="price">{{ $item->price }}</span>
+                        <div class="mb-2 mt-2 row center">
+                            <div class="col-sm-12">
+                                <input type="number" class="form-control" placeholder="Amount" id="amount{{ $item->id }}" required>
+                                <span class="error-text text-danger amount-error"></span>
+                            </div>
+                        </div>
+                        <a href="javascript:order({{ $item->id }})" class="btn btn-rounded btn-primary">
+                            <span class="btn-icon-start text-primary">
+                                <i class="fa fa-shopping-cart"></i>
+                            </span> Order
+                        </a>
                     </div>
                 </div>
             </div>
@@ -46,213 +57,42 @@
 @push('custom-script')
 
 <script>
-
-    $(function(){
-        readData();
-    });
-
-    function readData(){
-        $.ajax({
-            type: "GET",
-            url: "{{ route('menu-getData') }}",
-            data: {},
-            success: function (result) {
-                // return console.log(result);
-               var table = $('#dataTable').DataTable({
-                    "ordering":true,
-                    "responsive":true,
-                    "destroy":true,
-                    "language": {
-                        "paginate": {
-                        "next": '<i class="fa fa-angle-double-right" aria-hidden="true"></i>',
-                        "previous": '<i class="fa fa-angle-double-left" aria-hidden="true"></i>'
-                        },
-                    },
-                    "createdRow": function ( row, data, index ) {
-                        $(row).addClass('selected')
-                    },
-                    "data":result.data,
-                    "columns":[
-                        {"data":"no"},
-                        {"data":"name"},
-                        {"data":"category"},
-                        {"data":"price"},
-                        {"data":"description"},
-                        {"data":"image"},
-                        {"data":"date"},
-                        {"data":"id"}
-                    ],
-                    "columnDefs":[
-                        {
-                            "targets":7,
-                            "data":"id",
-                            "render":function(data, type, row){
-                                return '<div class="btn-group mb-1">'+
-                                    '<button type="button" class="btn btn-primary">Action</button>'+
-                                    '<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">'+
-                                    '</button>'+
-                                    '<div class="dropdown-menu">'+
-                                        '<button class="dropdown-item btn-edit" data-id="'+data+'">Edit</button>'+
-                                        '<button class="dropdown-item btn-delete" data-id="'+data+'">Delete</button>'+
-                                    '</div>'+
-                                '</div>';
-                            },
-
-                        },
-                        {
-                            "targets":5,
-                            "data":"gambar",
-                            "render":function(data, type, row){
-                                return '<img src="{{ asset('image/content') }}/'+data+'" width="50" alt="">';
-                            },
-
-                        }
-                    ],
-                });
-
-                table.on('click', 'tbody tr', function() {
-                    var $row = table.row(this).nodes().to$();
-                    var hasClass = $row.hasClass('selected');
-                    if (hasClass) {
-                        $row.removeClass('selected')
-                    } else {
-                        $row.addClass('selected')
-                    }
-                })
-
-                table.rows().every(function() {
-                    this.nodes().to$().removeClass('selected')
-                });
-
-            },
-            error: function(err){
-                console.log(err);
-
-            }
-        });
-    }
-
-    $(document).on('submit','#createForm', function(e){
-        e.preventDefault();
-        let form = $(this);
-        let formData = new FormData(form[0]);
-
-        $.ajax({
-            type: "POST",
-            url: "{{ route('menu-create') }}",
-            data: formData,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function (result) {
-                console.log(result);
-                $('#createModal').modal('hide');
-                swal("Proses Success!!", "The addition of menu data was successful!", "success")
-                $('.name-error').text();
-                $('.price-error').text();
-                form.trigger('reset');
-                readData();
-            },
-            error: function(xhr, error){
-                var message = xhr.responseJSON.errors;
-                var name = message.name ?? '';
-                var price = message.price ?? '';
-
-                $('.name-error').text(name);
-                $('.price-error').text(price);
-
-            }
-        });
-    });
-
-    $(document).on('click', '.btn-edit', function(e){
-        e.preventDefault()
-        $.ajax({
-            type: "GET",
-            url: "{{ route('menu-getData') }}",
-            data: {
-                id: $(this).data('id'),
-            },
-            success: function (result) {
-
-                var form = $('#updateForm');
-                var data = result.data;
-                form.find('input[name=id]').val(data.id);
-                form.find('input[name=name]').val(data.name);
-                form.find('select[name=category]').val(data.category);
-                form.find('input[name=price]').val(data.price);
-                form.find('textarea[name=description]').val(data.description);
-                $(".display-image").attr("src", "image/content/" + data.image);
-
-                $('#updateModal').modal('show');
-            },
-            error: function(xhr, error){
-                console.log(err);
-            }
-        });
-    });
-
-    $(document).on('submit','#updateForm', function(e){
-        e.preventDefault();
-        var form = $(this);
-        var formData = new FormData(form[0]);
-
-        $.ajax({
-            type: "POST",
-            url: "{{ route('menu-update','') }}/"+form.find("input[name=id]").val(),
-            data: formData,
-            enctype: 'multipart/form-data',
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function (result) {
-                console.log(result);
-                $('#updateModal').modal('hide');
-                swal("Proses Success!!", "The update of menu data was successful!", "success")
-                readData();
-            },
-            error: function(err){
-                console.log(err);
-            }
-        });
-    });
-
-    $(document).on('click','.btn-delete', function(e){
-        e.preventDefault();
-        var form = $(this);
+    function order(menu_id){
         var inputToken = $("input[name=_token]");
         swal({
-            title: "Are you sure to delete ?",
-            text: "You will not be able to recover this imaginary file !!",
+            title: "Are you sure to order this ?",
+            text: "Your order will be saved in the order menu!!",
             type: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it !!",
+            confirmButtonColor: "#008000",
+            confirmButtonText: "Yes, order it !!",
 
         }).then((willDelete)=>{
             if (willDelete.value == true) {
                 $.ajax({
                     type: "POST",
-                    url: "{{ route('menu-delete','') }}/"+form.data('id'),
+                    url: "{{ route('order-create') }}",
                     data: {
                         _token: inputToken.val(),
+                        menu_id: menu_id,
+                        amount: $('#amount'+menu_id).val(),
                     },
                     success: function (result) {
+                        console.log(result);
                         inputToken.val(result.newtoken);
-                        swal("Success", "Delete data was success!!", "success")
-                        readData();
+                        swal("Success", "Order menu was success!!", "success")
+                    },
+                    error: function(xhr, error){
+                        console.log(xhr);
                     }
                 });
 
             }else if(willDelete.dismiss == 'cancel'){
-                sweetAlert("Cancel", "Delete data was cancel!!", "error")
+                sweetAlert("Cancel", "Order menu was cancel!!", "error")
             }
         });
 
-    });
-
-
+    }
 </script>
 
 @endpush

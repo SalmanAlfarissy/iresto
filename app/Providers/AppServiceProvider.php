@@ -7,6 +7,7 @@ use App\Repositories\Debet\DebetRepository;
 use App\Repositories\Kredit\KreditRepository;
 use App\Repositories\Ledgerbalance\LedgerBalanceRepository;
 use App\Repositories\Menu\MenuRepository;
+use App\Repositories\Order\OrderRepository;
 use App\Repositories\Transaction\TransactionRepository;
 use App\Repositories\User\UserRepository;
 use App\Services\ContractPayment;
@@ -35,6 +36,8 @@ class AppServiceProvider extends ServiceProvider
                 return $app->make(LedgerBalanceRepository::class);
             }elseif (preg_match("/menu/", request()->url())) {
                 return $app->make(MenuRepository::class);
+            }elseif (preg_match("/order/", request()->url())) {
+                return $app->make(OrderRepository::class);
             }
         });
 
