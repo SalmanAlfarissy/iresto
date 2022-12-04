@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Debet;
+use App\Models\Kredit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +27,14 @@ class DebetController extends Controller
         ]);
 
         $user = Auth::user();
+        $kredit = Kredit::where('user_id', $user->id)->sum('amount');
+        $debet = Debet::where('user_id', $user->id)->sum('amount');
+        $saldo = $kredit - $debet;
+
+        if ($request->gross_amount > $saldo ) {
+            return $this->result('Your balance is insufficient!');
+        }
+
         $request['customer_details'] = $user;
         $request['item_details'] = [
             "id"=>"t02",

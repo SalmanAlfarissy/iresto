@@ -268,10 +268,14 @@
                 gross_amount: form.find('input[name=gross_amount]').val(),
             },
             success: function (result) {
-                swal("Success", "Transfer success!", "success").then(function (){
-                    console.log(result.data);
-                    dataTransaksi(result.data);
-                });
+                if(result.status){
+                    swal("Success", "Transfer success!", "success").then(function (){
+                        dataTransaksi(result.data);
+                    });
+                }else {
+                    swal("Warning", result.message, "warning");
+                }
+
             },
             error: function (xhr, error) {
                 var message = xhr.responseJSON.errors;
