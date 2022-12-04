@@ -31,11 +31,13 @@
                 </a>
             </li>
 
+            @if ($status == 'admin')
             <li class="{{ request()->is('user') ? 'mm-active' : '' }}"><a href="{{ route('user') }}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-381-user"></i>
                     <span class="nav-text">User</span>
                 </a>
             </li>
+            @endif
 
             <li class="{{ request()->is('menu/admin') ? 'mm-active' : '' }}"><a href="{{ route('menu-admin') }}" class="ai-icon" aria-expanded="false">
                     <i class="flaticon-043-menu"></i>

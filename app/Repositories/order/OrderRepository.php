@@ -81,7 +81,7 @@ class OrderRepository implements ContractRepository
         if($user->status == 'customer'){
             $this->model = $this->model->where('user_id', $request['user_id'])
             ->update([
-                'payment_confirmation'=> $request['payment_confirmation'],
+                'payment_confirmation'=> $request['payment_confirmation'] ?? '0',
                 'seat_number'=>$request['seat_number'],
                 'status'=>$request['status']
             ]);
